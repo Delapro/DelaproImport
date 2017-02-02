@@ -1,5 +1,17 @@
 # Routinen zum Import von Daten aus MakroLab
 
+# Enumeration einführen
+Add-Type -TypeDefinition @"
+   public enum MLVariante
+   {
+      Paradox,
+      SqlServer
+   }
+"@
+
+# TODO: sollte abhängig von der Umgebung ermittelt werden!
+$Modus = [MLVariante]::Paradox
+
 # Zunächst mal allgemein benötigte Funktionen
 . .\ImportFromML.PS1
 
@@ -7,20 +19,22 @@
 [System.Threading.Thread]::CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator="."
 
 $expPath=& {throw "Pfad für CSV-Dateien zuweisen, externe Platte"}
+$DelaproPath = "C:\DELAGAME"
 
 # Parameter für Parameter-Splatting
 # Anwendung über @Encoding anstatt -Encoding OEM
 $Encoding=@{Encoding="OEM"}
 
-$user = "sa"
-$pass = "I#d3K5l5d3W5"
+If ($Modus -eq [MLVariante]::SqlServer) {
+    $user = "sa"
+    $pass = "I#d3K5l5d3W5"
 
-import-module sqlps -DisableNameChecking
-$sm = New-Object Microsoft.SqlServer.Management.Smo.Server '.\DATEXTSQLE'
-
-# Pseudovariable um Fehlermeldungen zu vermeiden
-$sm=[PSCustomObject]@{Databases=@("Nix")}
-
+    import-module sqlps -DisableNameChecking
+    $sm = New-Object Microsoft.SqlServer.Management.Smo.Server '.\DATEXTSQLE'
+} else {
+    # Pseudovariable um Fehlermeldungen zu vermeiden
+    $sm=[PSCustomObject]@{Databases=@("Nix")}
+}
 
 . .\Import\ArbArt.PS1
 . .\Import\AbtBez.PS1
@@ -77,9 +91,8 @@ $kunJahr = "17"
 
 
 # Eigentlichen Import ins Delapro durchführen
-C:
-cd \DELAGAME
+Set-Location $DelaproPath
 $csv=get-item F:\export\*.csv
-$csv | % { copy-item -Path $_  -Destination C:\delagame  -Verbose }
+$csv | % { copy-item -Path $_  -Destination $DelaproPath  -Verbose }
 $csv | % {$_.Name; .\DLPImport.exe ($_.Name) /AUTOIMPORT /ZAP }
 .\KILLNTX.BAT
