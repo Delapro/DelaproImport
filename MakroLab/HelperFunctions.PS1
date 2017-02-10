@@ -5,16 +5,43 @@ Function Invoke-Umlaute {
 	Param(
 		[string]$csvFile
 	)
-	$csv = get-content $csvFile
-	$c = $csv| % {$_ = $_.replace([char]246,[char]148).replace([char]252,[char]129).replace([char]228,[char]132).replace([char]223,[char]225).replace([char]220,[char]154); $_}
-	#$c | Set-Content Neu.txt  -Encoding Byte
-	#$enc = [system.Text.Encoding]::ASCII
-	#$enc.GetBytes($c) | Set-Content Neu.txt  -Encoding Byte
-	$iso=[System.Text.Encoding]::GetEncoding("ibm850")
-	$utf8 = [System.Text.Encoding]::UTF8
-	$utfBytes=$utf8.GetBytes($c)
-	$isoBytes=[System.Text.Encoding]::Convert($utf8, $iso, $utfBytes)
-	$isoBytes | Set-Content Neu.txt  -Encoding Byte
+#	$csv = get-content $csvFile
+#	$c = $csv| % {$_ = $_.replace([char]246,[char]148).replace([char]252,[char]129).replace([char]228,[char]132).replace([char]223,[char]225).replace([char]220,[char]154); $_}
+#	#$c | Set-Content Neu.txt  -Encoding Byte
+#	#$enc = [system.Text.Encoding]::ASCII
+#	#$enc.GetBytes($c) | Set-Content Neu.txt  -Encoding Byte
+#	$iso=[System.Text.Encoding]::GetEncoding("ibm850")
+#	$utf8 = [System.Text.Encoding]::UTF8
+#	$utfBytes=$utf8.GetBytes($c)
+#	$isoBytes=[System.Text.Encoding]::Convert($utf8, $iso, $utfBytes)
+#	$isoBytes | Set-Content Neu.txt  -Encoding Byte
+
+
+	$path = $csvFile
+
+	$numberOfBytesToRead = (Dir $path).length
+
+	$fileStream = [System.IO.File]::Open($path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+	$binaryReader = New-Object System.IO.BinaryReader($fileStream)
+	[Byte[]] $byteArray = $binaryReader.ReadBytes($numberOfBytesToRead)
+
+	$pos=0
+	for ($i = 0; $i -lt $byteArray.Count; $i++) {
+      switch ($byteArray[$i]) {
+		  246: {$byteArray[$i] = 148}
+		  252: {$byteArray[$i] = 129}
+		  228: {$byteArray[$i] = 132}
+		  223: {$byteArray[$i] = 225}
+		  220: {$byteArray[$i] = 154}
+	  }
+	}
+
+	$fileStream.Close()
+
+	$fileStream = [System.IO.File]::Open($path, [System.IO.FileMode]::OpenOrCreate, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+	$binaryWriter = New-Object System.IO.BinaryWriter($fileStream)
+	$binaryWriter.Write($byteArray)
+	$fileStream.Close()
 
 }
 
