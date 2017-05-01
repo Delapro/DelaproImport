@@ -1,8 +1,17 @@
 # BZEILEN enthält die Auftragspositionen
 #	Typ ist eine Art von Artikelart, 0=BEL2, 1=Privat, 3=Text, 2=?
 	
-	$aufpos = Invoke-SqlCmd -Query "SELECT * FROM BZeilen" -Database $sm.Databases[0].Name -Serverinstance $sm.DomainInstanceName  -Username $user -Password $pass
-	
+	If ($Modus -eq [MLVariante]::SqlServer) {
+
+		$aufpos = Invoke-SqlCmd -Query "SELECT * FROM BZeilen" -Database $sm.Databases[0].Name -Serverinstance $sm.DomainInstanceName  -Username $user -Password $pass
+	} else {
+		Write-Information "Muss manuel durch öffnen der BZeilen.DB in dbsys.exe geöffnet und als CSV exportiert werden"
+
+		# Umlaute konvertieren
+		Invoke-Umlaute -csvFile $expPath\BZeilen.TXT -DestFile $expPath\BZeilen.CSV
+
+		$aufpos = Import-Csv -Path $expPath\BZeilen.CSV -Encoding OEM
+	}
 	
 	$auftrPosFelder = @(
 		@{Name="AuftragNr";Expression={AuftrNr $_.RefNummer}},

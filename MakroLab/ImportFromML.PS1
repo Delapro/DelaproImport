@@ -13,7 +13,8 @@ Add-Type -TypeDefinition @"
 $Modus = [MLVariante]::Paradox
 
 # Zunächst mal allgemein benötigte Funktionen
-. .\ImportFromML.PS1
+. .\HelperFunctions.PS1
+. .\HelperParadox.PS1
 
 # Wichtige Funktion, damit Zahlen korrekt exportiert werden:
 [System.Threading.Thread]::CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator="."
@@ -34,6 +35,10 @@ If ($Modus -eq [MLVariante]::SqlServer) {
 } else {
     # Pseudovariable um Fehlermeldungen zu vermeiden
     $sm=[PSCustomObject]@{Databases=@("Nix")}
+    # Pfad der *.DB-Dateien
+    $Daten = "C:\Datext\MakroLab\Daten\"
+    Open-DBConnection -Daten $Daten
+
 }
 
 . .\Import\ArbArt.PS1

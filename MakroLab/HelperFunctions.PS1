@@ -3,45 +3,17 @@
 Function Invoke-Umlaute {
 	[CmdletBinding()]
 	Param(
-		[string]$csvFile
+		[string]$csvFile,
+		[string]$DestFile
 	)
-#	$csv = get-content $csvFile
-#	$c = $csv| % {$_ = $_.replace([char]246,[char]148).replace([char]252,[char]129).replace([char]228,[char]132).replace([char]223,[char]225).replace([char]220,[char]154); $_}
-#	#$c | Set-Content Neu.txt  -Encoding Byte
-#	#$enc = [system.Text.Encoding]::ASCII
-#	#$enc.GetBytes($c) | Set-Content Neu.txt  -Encoding Byte
-#	$iso=[System.Text.Encoding]::GetEncoding("ibm850")
-#	$utf8 = [System.Text.Encoding]::UTF8
-#	$utfBytes=$utf8.GetBytes($c)
-#	$isoBytes=[System.Text.Encoding]::Convert($utf8, $iso, $utfBytes)
-#	$isoBytes | Set-Content Neu.txt  -Encoding Byte
 
-
-	$path = $csvFile
-
-	$numberOfBytesToRead = (Dir $path).length
-
-	$fileStream = [System.IO.File]::Open($path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-	$binaryReader = New-Object System.IO.BinaryReader($fileStream)
-	[Byte[]] $byteArray = $binaryReader.ReadBytes($numberOfBytesToRead)
-
-	$pos=0
-	for ($i = 0; $i -lt $byteArray.Count; $i++) {
-      switch ($byteArray[$i]) {
-		  246: {$byteArray[$i] = 148}
-		  252: {$byteArray[$i] = 129}
-		  228: {$byteArray[$i] = 132}
-		  223: {$byteArray[$i] = 225}
-		  220: {$byteArray[$i] = 154}
-	  }
+	$iso=[System.Text.Encoding]::GetEncoding("ibm850")
+	$utf8 = [System.Text.Encoding]::UTF8
+	If (Test-Path $DestFile) {
+		Remove-Item $DestFile
 	}
 
-	$fileStream.Close()
-
-	$fileStream = [System.IO.File]::Open($path, [System.IO.FileMode]::OpenOrCreate, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
-	$binaryWriter = New-Object System.IO.BinaryWriter($fileStream)
-	$binaryWriter.Write($byteArray)
-	$fileStream.Close()
+	Get-Content $csvFile -ReadCount 1 | ForEach-Object {[System.Text.Encoding]::Convert($utf8, $iso, $utf8.GetBytes($_+[char]13+[char]10)) | Add-Content -Path $DestFile -Encoding Byte}
 
 }
 
@@ -120,26 +92,3 @@ Function BelBebNr {$n=$args[0].TrimEnd()
 Function PosNr {$p=$args[0]; $p.ToString().Trim().PadLeft(3) }
 
 Function PosNrRight {$p=$args[0]; $p.ToString().Trim().PadLeft(7).SubString(4,3) }
-
-
-# Achtung globale Variable $global:connection muss definiert sein!
-Function Invoke-SqlCmd {
-	[CmdletBinding()]
-	Param(
-		[string]$Query,
-		[string]$Database,
-		[string]$Username,
-		[string]$Password
-	)
-	$com=$global:connection.CreateCommand()
-	$com.CommandText=$Query
-	$r=$com.ExecuteReader()
-	If ($r.hasRows) {
-		$dt=[System.Data.DataTable]::new()
-		$dt.Load($r)
-	}
-	$r.Close()
-	$dt
-		
-}
-
