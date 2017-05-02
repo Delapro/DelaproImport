@@ -55,3 +55,7 @@
 	$rech | select -Property $RechFelder | ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\Rechnung.CSV -Force @Encoding -Verbose
 	
 		
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\Rechnung.CSV $expPath\Rechnung.TXT
+    Invoke-Umlaute -CsvFile $expPath\Rechnung.TXT -DestFile $expPath\Rechnung.CSV
+}

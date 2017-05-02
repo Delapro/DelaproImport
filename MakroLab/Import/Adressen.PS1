@@ -36,6 +36,10 @@ $t | select -Property $TechnikerFelder | ConvertTo-Csv -NoTypeInformation  | Sel
 
     # $t | select Nummer, Anrede_1, Anrede_2, Vorname, Name, Strasse, PLZ, Ort,  Mail, Mobil, TelFirma, TelPrivat, IBAN_1, IBAN_2, Konto_1, Konto_2, Land, Geburtstag, FaxFirma, AbsenderZeile, BLZ_2, BLZ_1, BIC_2, BIC_1, Bank_2, Bank_1, BankNr2, BankNr | | ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\Techniker.CSV -Force @Encoding -Verbose
 
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\Technike.CSV $expPath\Technike.TXT
+    Invoke-Umlaute -CsvFile $expPath\Technike.TXT -DestFile $expPath\Technike.CSV
+}
 
 # Kunden
 $k=$adr | where typ -eq 1
@@ -168,3 +172,7 @@ $Kundefelder = @(
 # Diese Vorgehensweise anstatt direkt Export-CSV aufzurufen sorgt dafür, dass kein Header ausgegeben wird:
 $k | select -Property $KundeFelder | ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\Kunde.CSV -Force @Encoding -Verbose
 	
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\Kunde.CSV $expPath\Kunde.TXT
+    Invoke-Umlaute -CsvFile $expPath\Kunde.TXT -DestFile $expPath\Kunde.CSV
+}

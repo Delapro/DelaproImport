@@ -114,3 +114,8 @@
 	)
 
 	$auftrag  | select -Property $AuftragFelder | ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\Auftrag.CSV -Force @Encoding -Verbose
+
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\Auftrag.CSV $expPath\Auftrag.TXT
+    Invoke-Umlaute -CsvFile $expPath\Auftrag.TXT -DestFile $expPath\Auftrag.CSV
+}

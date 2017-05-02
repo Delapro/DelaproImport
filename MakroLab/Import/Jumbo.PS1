@@ -20,3 +20,7 @@
 	$j | select -Property $JumboFelder| ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\StueckL2.CSV -Force @Encoding -Verbose
 	
 	
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\StueckL2.CSV $expPath\StueckL2.TXT
+    Invoke-Umlaute -CsvFile $expPath\StueckL2.TXT -DestFile $expPath\StueckL2.CSV
+}

@@ -5,3 +5,7 @@ $ArbArt = Invoke-SqlCmd -Query "SELECT * FROM ArbArt" -Database $sm.Databases[0]
 # Diese Vorgehensweise anstatt direkt Export-CSV aufzurufen sorgt dafür, dass kein Header ausgegeben wird:
 $ArbArt  | select -Property Bezeichnung| ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\ArbeitAr.CSV -Force @Encoding -Verbose
 
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\ArbeitAr.CSV $expPath\ArbeitAr.TXT
+    Invoke-Umlaute -CsvFile $expPath\ArbeitAr.TXT -DestFile $expPath\ArbeitAr.CSV
+}

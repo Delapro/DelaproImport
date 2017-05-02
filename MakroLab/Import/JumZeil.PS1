@@ -32,5 +32,9 @@
 	
 	# $jz.Referenz verweist auf $j.Nummer und stellt die Verbindung zwischen Jumbo und Positionen her.
 
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\StueckP2.CSV $expPath\StueckP2.TXT
+    Invoke-Umlaute -CsvFile $expPath\StueckP2.TXT -DestFile $expPath\StueckP2.CSV
+}
 
 

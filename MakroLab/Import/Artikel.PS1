@@ -56,6 +56,11 @@
 	
 	$art | select -Property $ArtFelder| ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path $expPath\Artikel.CSV -Force @Encoding -Verbose
 	
+If ($Modus -eq [MLVariante]::Paradox) {
+    ren $expPath\Artikel.CSV $expPath\Artikel.TXT
+    Invoke-Umlaute -CsvFile $expPath\Artikel.TXT -DestFile $expPath\Artikel.CSV
+}
+
 #	Möglich weitere Werte: TechVorgabe, TechSplit
 #
 #	Die Zuordnung der Materialien zur Artikelart läuft über mehrere Felder.
