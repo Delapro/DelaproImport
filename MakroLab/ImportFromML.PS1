@@ -93,6 +93,7 @@ $kunJahr = "17"
 # QUALKOPF Sind die Unterpunkte von QUALITAT, es sind einzelne Fragen für den Techniker
 
 
+Write-Error "Nummern in Nummern.DBF setzen, Auftrag, Kunde, Techniker, Jumbos"
 
 
 # Eigentlichen Import ins Delapro durchführen
