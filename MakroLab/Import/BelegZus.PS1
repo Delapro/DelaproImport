@@ -41,7 +41,7 @@
 		@{Name="KasseEdelm";Expression={""}},
 		@{Name="KasseZaehn";Expression={""}},
 		@{Name="KasseFerti";Expression={""}},
-		@{Name="RechnNr";Expression={RechNr $_.RG_Nummer (KunNr $_.Kunde)}},
+		@{Name="RechnNr";Expression={If (("R","G","T","K" -contains (AuftragArt $_.BelegTyp))) {RechNr $_.RG_Nummer (KunNr $_.Kunde)}}},
 		@{Name="Kronenzu";Expression={""}},
 		"MwSt_Satz",
 		@{Name="Volumen";Expression={$_.Brutto}},
