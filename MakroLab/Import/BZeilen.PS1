@@ -19,7 +19,7 @@
 		"Bezeichnung",
 		"Menge",
 		"Preis",
-		@{Name="GPreis";Expression={$_.Menge * $_.Preis}},
+		@{Name="GPreis";Expression={[decimal]$_.Menge * [decimal]$_.Preis}},
 		@{Name="MwSt";Expression={""}},
 		"Abteilung",
 		@{Name="Techniker1";Expression={TechNr $_.Tech}},   # TODO: Technikersplitting beachten!
