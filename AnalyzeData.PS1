@@ -9,11 +9,12 @@ Import-Module sqlps -DisableNameChecking
 Set-Location -Path $location
 $sm = New-Object Microsoft.SqlServer.Management.Smo.Server $SQLInstanz
 
-
+# holt alle Datensätze einer Tabelle
 Function Get-Table {
 	Param($table) Invoke-SqlCmd -Query "SELECT * FROM $table" -Database $global:sm.Databases[0].Name -Serverinstance $global:sm.DomainInstanceName
 }
 
+# holt alle Datensätze einer Tabelle und gibt diese im Grid aus
 Function Show-Table {
 	Param($table) Get-Table $table | Out-GridView -Title $table
 }
