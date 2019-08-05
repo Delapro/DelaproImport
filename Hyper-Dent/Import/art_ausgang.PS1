@@ -1,0 +1,1 @@
+# Art_ausgang kann an ARTBEWEG.DBF übertragen werden
