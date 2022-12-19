@@ -47,3 +47,5 @@ Um per Powershell auf Firebird-SQL-Server zugreifen zu können kann man InvokeQu
 Beispiel: https://stackoverflow.com/questions/58501690/connection-to-firebird-from-powershell-script
 
 Oder per ODBC: https://stackoverflow.com/questions/18704610/powershell-connect-to-firebird
+
+Informationen zum Datenverzeichnis: https://web.archive.org/web/20161106222227/http://soho-soft.de/index.php/tipps-tricks.
