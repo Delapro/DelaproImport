@@ -242,3 +242,114 @@ KUNDENNUMMER
          618
          610
 ```
+
+Automatisiert einen Überblick bekommen, in welchen Tabellen wieviel Datensätze stecken:
+```
+"CONNECT C:\temp\sohotech.fdb;"|Set-Content c:\temp\script.sql
+$tables|%{"SELECT COUNT(*) AS $($_)_COUNT FROM $_;"}|Add-Content C:\temp\script.sql
+.\isql.exe -i C:\temp\script.sql -q -user sysdba -p easy1
+        
+       SOHODBPP_COUNT
+=====================
+                90672
+
+
+       SOHODBZA_COUNT
+=====================
+                    3
+
+
+       SOHOETIK_COUNT
+=====================
+                    0
+
+
+       SOHOGINI_COUNT
+=====================
+                 2022
+
+
+       SOHOKALK_COUNT
+=====================
+                    6
+
+
+       SOHONDSP_COUNT
+=====================
+                    4
+
+
+       SOHOSEPA_COUNT
+=====================
+                    0
+
+
+       SOHOSYS1_COUNT
+=====================
+                    1
+
+
+       SOHOTEAE_COUNT
+=====================
+                 1855
+
+
+       SOHOTEAK_COUNT
+=====================
+                    0
+
+
+       SOHOTEAR_COUNT
+=====================
+                 2278
+
+
+       SOHOTEAU_COUNT
+=====================
+                   99
+
+
+       SOHOTEKD_COUNT
+=====================
+                  121
+
+
+       SOHOTEPE_COUNT
+=====================
+              1348396
+
+
+       SOHOTEPG_COUNT
+=====================
+                28618
+
+
+       SOHOTEPR_COUNT
+=====================
+                66520
+
+
+       SOHOTESK_COUNT
+=====================
+                59218
+
+
+       SOHOTEST_COUNT
+=====================
+                53494
+
+
+       SOHOTETX_COUNT
+=====================
+                 2416
+
+
+       SOHOZAHN_COUNT
+=====================
+                    0
+```
+
+        
+        
+        
+        
