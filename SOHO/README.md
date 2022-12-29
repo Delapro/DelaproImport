@@ -177,3 +177,68 @@ RDB$PRIMARY16 UNIQUE INDEX ON SOHOTEST(TABELLE, ZEITRAUM, BELNR)
 RDB$PRIMARY17 UNIQUE INDEX ON SOHOTETX(TABELLE, PLZNR, PLZNRERGAENZUNG)
 RDB$PRIMARY18 UNIQUE INDEX ON SOHOZAHN(SATZNR)
 ```
+
+Um mehr Informationen über die einzelnen Tabellen zu bekommen, lesen wir diese zunächst per Powershell ein
+
+```Powershell
+# der Pfad C:\temp muss existieren, der aktuelle Pfad muss C:\Program Files\Firebird\Firebird_3_0 sein
+# erzeugt ein SQL-Script zum Ausführen
+'CONNECT C:\temp\sohotech.fdb;Show Tables;'|Set-Content c:\temp\script.sql
+$Tables=.\isql.exe -i C:\temp\script.sql -q
+# doppelte Spaltenausgabe auflösen und reinen Tabellennamen ermitteln
+$Tables=($Tables -split ' ') | where length -gt 0
+# Jetzt kann $Tables für weitere Zwecke verwendet werden
+
+```
+
+Man kann zwar die Datenbank einfach öffnen aber tatsächlich Zugriff auf den Inhalt bekommt man erst wenn man sich als SYSDBA mit dem Passwort, welches man bei der Installation für den SYSDBA vergeben hat anmeldet. Beim Aufruf von ISQL.EXE kann man mittels Parameter -u SYSDBA und -p PASSWORT die Parameter direkt mitgeben.
+
+Hier werden einfach mal ein paar SQL-Abfragen aufgeführt und etwaige Hinweise dazu beschrieben:
+
+Anzahl der Datensätze ermitteln, wie gewohnt:
+```
+SQL> select COUNT(*) FROM SOHODBPP;
+
+                COUNT
+=====================
+                90672
+```
+
+Rechnungsnummer, Auftragsnummer, Kundennummer und Rechnungsdatum ermitteln:
+```
+SQL> select Rechnungsnr,Auftragsnr,Kundennummer,Rechnungsdatum FROM SOHODBPP ORDER BY rechnungsdatum DESC FETCH FIRST 10 ROWS ONLY;
+          RECHNUNGSNR            AUFTRAGSNR KUNDENNUMMER RECHNUNGSDATUM
+===================== ===================== ============ ==============
+            167220147                     0          167 2022-12-27
+            167220147                     0          167 2022-12-27
+            103220217                114749          103 2022-12-23
+            103220217                114749          103 2022-12-23
+            105220379                114810          105 2022-12-23
+            105220379                114810          105 2022-12-23
+            108220157                114717          108 2022-12-23
+            108220157                114717          108 2022-12-23
+            125220263                     0          125 2022-12-23
+            125220263                     0          125 2022-12-23
+```            
+            
+Die Rechnungsnummer scheint nach dem Schema <Kundennummer><Jahr zweistellig><laufende Rechnungsnummer im Monat> aufgebaut zu sein.
+Warum aber existiert keine Auftragsnummer obwohl eine Rechnungsnummer existiert?!?
+
+
+Ausgabe der Kundennummern
+```
+SQL> select Kundennummer FROM SOHOTEKD ORDER BY Kundennummer DESC FETCH FIRST 10 ROWS ONLY;
+
+KUNDENNUMMER
+============
+         999
+         901
+         900
+         633
+         631
+         630
+         628
+         625
+         618
+         610
+```
