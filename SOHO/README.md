@@ -1498,13 +1498,13 @@ $CSVEnd = @"
 || '"'
 "@
 $output = $Felder|%{$_.Trim()}|%{$CSVBegin}{"$_ $($CSVSeparator)"}{$CSVEnd}
-"Select $Output FROM SOHOTEAR ORDER BY BELNR WHERE Tabelle = 0;"
+"Select $Output FROM SOHOTEAR WHERE Tabelle = 0 ORDER BY BELNR;"
 ```
 
-Export der BEB-Leistungen
+Export der BEB-Leistungen, Reihenfolge WHERE und ORDER BY beachten!
 ```
 
 output 'C:\temp\BebLeistungen.csv'
-select '"' || Trim(belNr) || '";"' || Trim(belnrausdruck) || '";"' || Trim(Bezeichnung) || '"' from SOHOTEAR order by belnr WHERE Tabelle = 0;
+select '"' || Trim(belNr) || '";"' || Trim(belnrausdruck) || '";"' || Trim(Bezeichnung) || '"' from SOHOTEAR WHERE Tabelle = 0 order by belnr ;
 output;
 ```
