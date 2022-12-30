@@ -349,7 +349,46 @@ $tables|%{"SELECT COUNT(*) AS $($_)_COUNT FROM $_;"}|Add-Content C:\temp\script.
                     0
 ```
 
+So wie es aussieht enthält SOHOTEPE die Auftrags- bzw. Rechnungspositionen:
+```
+SQL> select Tabelle, Rechnungsnummer, Zeilennummer,Status,Datum,BelNr,Bezeichnung FROM SOHOTEPE order by Datum desc FET
+H FIRST 10 ROWS ONLY;
+
+     TABELLE       RECHNUNGSNUMMER ZEILENNUMMER STATUS       DATUM BELNR    BEZEICHNUNG
+============ ===================== ============ ====== =========== ======== ===========================================
+===================================
+           0                919610           13 1      2022-12-27    001.0  Modell
+           0                919610            4 1      2022-12-27    005.1  Sõgemodell
+           0                919610           15 1      2022-12-27    005.1  Sõgemodell
+          20                102201            1 0      2022-12-27       -1  Oberkiefer
+           0                919610           12 1      2022-12-27       -2  Unterkiefer
+           0                919610           29 0      2022-12-27           \27.12.20221
+```
         
-        
-        
-        
+gezielte Ausgabe der Positionen eines Auftrags bzw. Rechnung:
+```
+SQL> select Rechnungsnummer, Zeilennummer,Status,Datum,BelNr,Bezeichnung FROM SOHOTEPE WHERE Rechnungsnummer = '919300';
+
+      RECHNUNGSNUMMER ZEILENNUMMER STATUS       DATUM BELNR    BEZEICHNUNG
+===================== ============ ====== =========== ======== ===============================================================================
+               919300            1 1      2022-09-15       -1  Oberkiefer
+               919300            2 1      2022-09-15    001.0  Modell
+               919300            3 1      2022-09-15    002.3  Verwendung von Kunststoff
+               919300            4 1      2022-09-15    005.1  Sõgemodell
+               919300            5 1      2022-09-15    012.0  Mittelwertartikulator
+               919300            6 1      2022-09-15    102.4  Krone f³r vestibulõre Verblendung
+               919300            7 1      2022-09-15    110.0  Br³ckenglied
+               919300            8 1      2022-09-15    162.0  Vestibulõre Verblendung Keramik
+               919300            9 1      2022-09-15     2123  Stufenkrone gegossen, f³r Keramik o. Komposite - Teilverblendung
+               919300           10 1      2022-09-15     2611  Teil-Verblendung  aus Keramik
+               919300           11 1      2022-09-15    933.0  Versandkosten
+               919300           12 1      2022-09-15    970.0  Verarbeitungsaufwand NEM-Legierung
+               919300           13 1      2022-09-15   991013  Quattrodisk NEM Soft CoCr
+               919300           14 1      2022-09-15   900000  Noritake Ex-3
+               919300           15 0      2022-09-15           \Quattrodisk NEM Soft CoCr              Goldquadrat                             CE=ja Co 63,0, Cr 29,0, Mo 6,0, Mn x, Nb x, Si x, Fe x
+               919300           16 0      2022-09-15           \Noritake Ex-3                          Noritake
+                       CE=ja
+               919300           17 0      2022-09-15           \OK 15-23 KV 24,25 BV 26 KV NE
+               919300           18 0      2022-09-15           \M
+               919300           19 0      2022-09-15           \15.09.20221
+```
