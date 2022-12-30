@@ -1424,3 +1424,25 @@ GEAENDERTAMZEIT                 TIME                  4 <null>
 GEAENDERTVON                    VARCHAR              30 WIN1252
 VERSION_NR                      INTEGER               4 <null>
 ```
+
+Es gibt zwar keinen direkten Export in CSV-Dateien oder ähnlichem, dafür kann aber CSV-Dateien über einen Trick erstellen. In ISQL geht dies so:
+```
+output 'C:\temp\BelBebNr.csv'
+select '"' || Trim(belNr) || '";"' || Trim(belnrausdruck) || '";"' || Trim(Bezeichnung) || '"' from SOHOTEAR order by belnr;
+output;
+```
+
+Danach kann man die CSV-Datei wie gewohnt in Powershell einlesen:
+```
+PS C:\temp> $csv=Import-Csv -Path .\BelBebNr.csv -Header @('BelNr', 'Ausdruck', 'Bezeichnung') -Delimiter ';'
+PS C:\temp> $csv|select -First 3
+
+BelNr Ausdruck Bezeichnung
+----- -------- -----------
+1
+-1             Oberkiefer
+-1             Oberkiefer
+```
+        
+Aber wie immer gibts Probleme mit den Umlauten. Wahrscheinlich wirds auch noch mit dem einen oder anderen Feldtypen Probleme geben...
+TODO...
