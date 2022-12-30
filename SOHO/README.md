@@ -1446,3 +1446,65 @@ BelNr Ausdruck Bezeichnung
         
 Aber wie immer gibts Probleme mit den Umlauten. Wahrscheinlich wirds auch noch mit dem einen oder anderen Feldtypen Probleme geben...
 TODO...
+
+
+Auf jeden Fall ist nun klar für was das Feld Tabellen steht, darunter werden die Leistungsverzeichnisse verstanden, also BEBART im Delapro. Die BelNr ist die Nummer einer Leistung oder eines Materials, wobei es eine Besonderheit gibt, denn es gehört das Feld BelNrErweiterung dazu. Im Grunde gilt BelNr+BelNrErweiterung = BELNR im Delapro. Die Leistungen und Materialien sind in der Tabelle SOHOTEAR untergebracht, enstpricht also ARTIKEL.DBF im Delapro.
+Im Feld Tabellen stehen die Werte 0=BEB, 1=BEL2, 2=Material, 3=BEBZ. Da das Feld 4stellig ist, gäbs noch jede Menge weitere, aber mehr sind momentan nicht bekannt. Auch scheint es keine Tabelle mit einer Namendefinition für die Verzeichnisse zu geben.
+
+```Powershell
+# aus Tabelle mit Feldnamen Liste für CSV-Export erstellen
+$Felder = @"
+TABELLE            
+BELNR              
+BELNRERWEITERUNG   
+BEZEICHNUNG        
+EINZELPREIS        
+RUESTZEIT          
+VERWEILZEIT        
+BEARBZEIT          
+ZUSEINGABEVONBIS   
+ZUSEINGABE2VONBIS  
+ZUSEINGABE3VONBIS  
+RVOEXTRA           
+BELNRAUSDRUCK      
+ABWABTEILUNG       
+MATERIALART        
+HERSTELLER         
+BESTANDTEIL        
+SONSTIGES          
+ZUSCHLPLANZ1       
+ZUSCHLPLANZ2       
+ZUSCHLPLANZ3       
+KSTUNDENSATZ       
+KRUESTZEIT         
+ZUSCHLKUND1        
+ZUSCHLKUND2        
+ZUSCHLKUND3        
+ZUSCHLKUND4        
+KSKPREIS           
+GEAENDERTMOD       
+GEAENDERTAMDAT     
+GEAENDERTAMZEIT    
+GEAENDERTVON       
+VERSION_NR         
+"@ -split "`n"
+$CSVBegin = @"
+'"' ||
+"@
+$CSVSeparator = @"
+|| '";"' ||
+"@
+$CSVEnd = @"
+|| '"'
+"@
+$output = $Felder|%{$_.Trim()}|%{$CSVBegin}{"$_ $($CSVSeparator)"}{$CSVEnd}
+"Select $Output FROM SOHOTEAR ORDER BY BELNR WHERE Tabelle = 0;"
+```
+
+Export der BEB-Leistungen
+```
+
+output 'C:\temp\BebLeistungen.csv'
+select '"' || Trim(belNr) || '";"' || Trim(belnrausdruck) || '";"' || Trim(Bezeichnung) || '"' from SOHOTEAR order by belnr WHERE Tabelle = 0;
+output;
+```
