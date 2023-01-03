@@ -129,7 +129,7 @@ Automatisiert einen Überblick bekommen, in welchen Tabellen wieviel Datensätze
 ```
 "CONNECT C:\temp\sohotech.fdb;"|Set-Content c:\temp\script.sql
 $tables|%{"SELECT COUNT(*) AS $($_)_COUNT FROM $_;"}|Add-Content C:\temp\script.sql
-.\isql.exe -i C:\temp\script.sql -q -user sysdba -p easy1
+.\isql.exe -i C:\temp\script.sql -q -user sysdba -p mypassword
         
        SOHODBPP_COUNT
 =====================
@@ -306,7 +306,7 @@ WHERE R.RDB`$RELATION_NAME='Tabelle'
 ORDER BY R.RDB`$FIELD_POSITION
 "@
 $tables|%{"$($Struktur.Replace('Tabelle', $_));"}|Add-Content C:\temp\script.sql
-.\isql.exe -i C:\temp\script.sql -q -user sysdba -p easy1
+.\isql.exe -i C:\temp\script.sql -q -user sysdba -p mypassword
 ```
 
 Obiges Script sieht etwas wirr aus, liefert aber alles was benötigt wird. Zu beachten sind zwei Stellen in denen Tabelle durch den tatsächlichen Tabellennamen ersetzt wird, damit eine Zuordnung zwischen Feldname und Tabelle möglich wird.
