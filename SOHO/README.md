@@ -5,6 +5,7 @@ Verwendet Firebird. https://firebirdsql.org/, zur Frage der Version siehe: [Fire
 
 
 Um per Powershell auf Firebird-SQL-Server zugreifen zu können kann man InvokeQuery verwenden: https://www.powershellgallery.com/packages/InvokeQuery/1.0.2. Es bringt die Funktion <code>Invoke-FirebirdQuery</code> mit.
+siehe auch: [Zugriff](Zugriff.md#per-powershell)
 
 Beispiel: https://stackoverflow.com/questions/58501690/connection-to-firebird-from-powershell-script
 
