@@ -15,7 +15,7 @@ Stop-Process -Name firebird
 es bleibt zwar das Symbol noch in der Systray aber er läuft nicht mehr
 
 Zugriff über ISQL.EXE mit übergabe von user und password
-SQL> connect c:\temp\sohotech.fdb user sysdba password easy1;
+SQL> connect c:\temp\sohotech.fdb user sysdba password mypassword;
 
 ==> Nachfolgendes alles mit Adminrechten ausgeführt!!
 
@@ -128,7 +128,7 @@ Aber obige Probleme ließen sich umgehen, nachdem eine neue Eingabeaufforderung 
 Das ist nun die Variante wie es immer klappt:
 ```Powershell
 cd 'C:\Program Files\Firebird\Firebird_3_0'
-$pw=ConvertTo-SecureString -Force -AsPlainText 'easy1'
+$pw=ConvertTo-SecureString -Force -AsPlainText 'mypassword'
 $cred=New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList 'sysdba', $pw
 .\firebird.exe -a
 Invoke-FirebirdQuery -Sql "select COUNT(*) FROM SOHOTEAR" -Database C:\temp\SOHOTECH.FDB -Credential $cred
