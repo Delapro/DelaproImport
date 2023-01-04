@@ -61,6 +61,21 @@ RDB$PRIMARY17 UNIQUE INDEX ON SOHOTETX(TABELLE, PLZNR, PLZNRERGAENZUNG)
 RDB$PRIMARY18 UNIQUE INDEX ON SOHOZAHN(SATZNR)
 ```
 
+Weitere Dinge sind scheinbar nicht hinterlegt:
+
+```
+SQL> show proc;
+There are no stored procedures in this database
+SQL> show func;
+There are no user-defined functions in this database
+SQL> show view;
+There are no views in this database
+SQL> show triggers;
+There are no triggers in this database
+SQL> show generators;
+There are no generators in this database
+```
+
 Um mehr Informationen über die einzelnen Tabellen zu bekommen, lesen wir diese zunächst per Powershell ein
 
 ```Powershell
