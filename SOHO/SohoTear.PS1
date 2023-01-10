@@ -66,16 +66,16 @@ $PreisExport|Add-Content C:\temp\script.sql
 .\isql.exe -i C:\temp\script.sql -q -user sysdba -p easy1 -pag 0
 
 $Liste=Get-content c:\temp\BEl2-SOHOTEAR.txt|Select -Skip 3  # die Überschriftszeilen überspringen
-$Bel2 = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)00"}},@{N='BEBArt';E={'BEL2'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[double]$_.Einzelpreis}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
+$Bel2 = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)00"}},@{N='BEBArt';E={'BEL2'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[string]([double]$_.Einzelpreis)}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
 
 $Liste=Get-content c:\temp\BEB-SOHOTEAR.txt|Select -Skip 3  # die Überschriftszeilen überspringen
-$BeB = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)00"}},@{N='BEBArt';E={'BEB'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[double]$_.Einzelpreis}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
+$BeB = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)00"}},@{N='BEBArt';E={'BEB'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[string]([double]$_.Einzelpreis)}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
 
 $Liste=Get-content c:\temp\Material-SOHOTEAR.txt|Select -Skip 3  # die Überschriftszeilen überspringen
-$Material = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)"}},@{N='BEBArt';E={''}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[double]$_.Einzelpreis}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
+$Material = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)"}},@{N='BEBArt';E={''}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[string]([double]$_.Einzelpreis)}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
 
 $Liste=Get-content c:\temp\BEBZ-SOHOTEAR.txt|Select -Skip 3  # die Überschriftszeilen überspringen
-$BEBZ = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)"}},@{N='BEBArt';E={'BEBZ'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[double]$_.Einzelpreis}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
+$BEBZ = $Liste|ConvertFrom-Csv -Header $Felder -Delimiter ';'|select @{N='BelbebNr';E={"$($_.BelNr)$($_.BelNrErweiterung)"}},@{N='BEBArt';E={'BEBZ'}},@{N='Bezeichnung';E={$_.Bezeichnung}},@{N='Einzelpreis';E={[string]([double]$_.Einzelpreis)}},* -ExcludeProperty Tabelle,einzelpreis,belNr,belnrerweiterung,Bezeichnung
 
 $Encoding=@{Encoding="OEM"}
 $artFelder = @(
@@ -133,4 +133,5 @@ $bebz | select -Property $ArtFelder| ConvertTo-Csv -NoTypeInformation  | Select-
 $beb | select -Property $ArtFelder| ConvertTo-Csv -NoTypeInformation  | Select-Object -Skip 1 | Set-Content -Path c:\temp\BEB-Artikel.CSV -Force @Encoding -Verbose
 
 # jetzt könnnen BEBZ-Artikel.CSV und BEB-Artikel.CSV per DlpImport.exe in Artikel.DBF eingelesen werden.
-
+# z. B. so: copy-item c:\temp\BEB-Artikel.CSV c:\temp\artikel.csv; .\DLPImport.exe  artikel.csv /AUTOIMPORT /APPEND 
+# nach Übernahme Preise wegen Nachkommastellen prüfen!
