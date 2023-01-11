@@ -7,10 +7,15 @@
 # Danach kommt die Länge des nachfolgenden Strings in Bytes. Die weiteren Daten sind noch nicht analysiert, vor allem hinten raus
 # kommen wahrscheinlich noch relevante Daten.
 
+# Offensichtlich wurde die Dateistruktur, nachdem die BEB-Zahntechnik eingeführt wurde beibehalten, allerdings gab es dadurch
+# Probleme die sechsstelligen Nummern abzubilden. Aus diesem Grund wurde scheinbar mittels @-Zeichen eine spezielle Erweiterung
+# eingeführt um fehlende Bel-Nr. zu ergänzen was dann bei BEBZ- und Material-Nummern benutzt wurde.
+
 # Schneller Überblick in welcher Datei wieviel Jumbopositionen hinterlegt sind:
 dir *.jmb|select @{N='JumboPos';E={$_.Length/0x15b}}, name, lastwritetime
 
 # verlangt einen Dateinamen einer .JMB-Datei und gibt die enthaltenen Jumbopositionen zurück
+
 Function Get-JumboPos {
   [CmdletBinding()]
   Param(
@@ -25,9 +30,19 @@ Function Get-JumboPos {
     $Zeile = [int]$record[0]
     $length = $record[2]
     $BelNr = $record[3..(3+$length-1)] -join ''
+    $BelExt = ''
     $length = $record[8]
     $Text = $record[9..(9+$length-1)] -join ''
-    [PSCustomObject]@{Zeile=$Zeile;BelNr=$BelNr;Text=$Text}
+    $ExtText = ''
+    $ExtPos = $Text.IndexOf('@')
+    If ($ExtPos -ge 0) {
+      $ExtText = $Text.SubString($ExtPos)
+      $Text = $Text.SubString(0, $ExtPos)
+      If ($ExtText.SubString(0,3) -eq '@0@') {
+        $BelExt = $ExtText.SubString($ExtText.IndexOfAny('@', 2)+1, $ExtText.IndexOfAny('@',3) -$ExtText.IndexOfAny('@',2)-1)
+      }
+    }
+    [PSCustomObject]@{Zeile=$Zeile;BelNr=$BelNr+$BelExt;Text=$Text;ExtText=$ExtText}
   }
 
   $recordSize = 0x15b
