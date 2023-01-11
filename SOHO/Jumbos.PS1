@@ -16,42 +16,54 @@ dir *.jmb|select @{N='JumboPos';E={$_.Length/0x15b}}, name, lastwritetime
 
 # verlangt einen Dateinamen einer .JMB-Datei und gibt die enthaltenen Jumbopositionen zurück
 
+# mit der Funktion kann man ermitteln welche Positionen vor allem in Jumbos vorkommen
+dir -File |Get-JumboPos|group belnr|sort count
+
+# Wahrscheinlich gibt es eine spezielle Logik, dass wenn bei der Feldlänge der BelNr 0 steht, dass es 
+# sich dann um eine gelöschte Position handelt?
+
 Function Get-JumboPos {
   [CmdletBinding()]
   Param(
+    [Parameter(Mandatory, ValueFromPipeline)]
     $Path
   )
 
-  Function Get-Record {
-    Param(
-      $record
-    )
+  Begin {
+    Function Get-Record {
+      Param(
+        $record
+      )
 
-    $Zeile = [int]$record[0]
-    $length = $record[2]
-    $BelNr = $record[3..(3+$length-1)] -join ''
-    $BelExt = ''
-    $length = $record[8]
-    $Text = $record[9..(9+$length-1)] -join ''
-    $ExtText = ''
-    $ExtPos = $Text.IndexOf('@')
-    If ($ExtPos -ge 0) {
-      $ExtText = $Text.SubString($ExtPos)
-      $Text = $Text.SubString(0, $ExtPos)
-      If ($ExtText.SubString(0,3) -eq '@0@') {
-        $BelExt = $ExtText.SubString($ExtText.IndexOfAny('@', 2)+1, $ExtText.IndexOfAny('@',3) -$ExtText.IndexOfAny('@',2)-1)
+      $Zeile = [int]$record[0]
+      $length = $record[2]
+      $BelNr = $record[3..(3+$length-1)] -join ''
+      $BelExt = ''
+      $length = $record[8]
+      $Text = $record[9..(9+$length-1)] -join ''
+      $ExtText = ''
+      $ExtPos = $Text.IndexOf('@')
+      If ($ExtPos -ge 0) {
+        $ExtText = $Text.SubString($ExtPos)
+        $Text = $Text.SubString(0, $ExtPos)
+        If ($ExtText.SubString(0,3) -eq '@0@') {
+          $BelExt = $ExtText.SubString($ExtText.IndexOfAny('@', 2)+1, $ExtText.IndexOfAny('@',3) -$ExtText.IndexOfAny('@',2)-1)
+        }
       }
+      [PSCustomObject]@{Zeile=$Zeile;BelNr=$BelNr+$BelExt;Text=$Text;ExtText=$ExtText}
     }
-    [PSCustomObject]@{Zeile=$Zeile;BelNr=$BelNr+$BelExt;Text=$Text;ExtText=$ExtText}
   }
-
-  $recordSize = 0x15b
-  $pos = [int]0
-  $j = Get-Content $Path -Raw
-  If ($j) {
-    while ($pos -lt $j.length/$recordSize) {
-      Get-Record $j[($pos*$recordSize)..(($pos+1)*$recordSize-1)]
-      $pos += 1
+  
+  Process {
+    $recordSize = 0x15b
+    $pos = [int]0
+    $j = Get-Content $Path -Raw
+    If ($j) {
+      while ($pos -lt $j.length/$recordSize) {
+        Get-Record $j[($pos*$recordSize)..(($pos+1)*$recordSize-1)]
+        $pos += 1
+      }
     }
   }
 }
+
