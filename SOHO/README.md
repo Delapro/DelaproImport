@@ -2,7 +2,7 @@
 
 Verwendet Firebird. https://firebirdsql.org/, zur Frage der Version siehe: [Firebird 3 oder 4](Firebird3oder4.md)
 
-
+Hier eine Übersicht der Verzeichnisstruktur: [Verzeichnisstruktur](VerzeichnisStruktur.md)
 
 Um per Powershell auf Firebird-SQL-Server zugreifen zu können kann man InvokeQuery verwenden: https://www.powershellgallery.com/packages/InvokeQuery/1.0.2. Es bringt die Funktion <code>Invoke-FirebirdQuery</code> mit.
 siehe auch: [Zugriff](Zugriff.md#per-powershell)
